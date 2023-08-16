@@ -12,7 +12,14 @@ def main():
     # server_socket.accept() # wait for client
     conn, addr = server_socket.accept()
     msg = "+PONG\r\n"
-    conn.send(msg.encode())
+    with conn:
+        conn.recv(1024)
+        conn.send(msg.encode())
+        while True:
+            message = conn.recv(1024)
+            if not message:
+                break
+            conn.send(msg.encode())
 
 
 if __name__ == "__main__":
